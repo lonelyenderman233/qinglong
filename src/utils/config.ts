@@ -36,23 +36,23 @@ export default {
   },
   scopes: [
     {
-      name: '定时任务',
+      name: '小Faker-定时任务',
       value: 'crons',
     },
     {
-      name: '环境变量',
+      name: '小Faker-环境变量',
       value: 'envs',
     },
     {
-      name: '配置文件',
+      name: '小Faker-配置文件',
       value: 'configs',
     },
     {
-      name: '脚本管理',
+      name: '小Faker-脚本管理',
       value: 'scripts',
     },
     {
-      name: '任务日志',
+      name: '小Faker-任务日志',
       value: 'logs',
     },
   ],
