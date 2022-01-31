@@ -98,9 +98,9 @@ check_pm2() {
   )
   echo -e "\n=====> 检测后台\n\n$api\n"
   if [[ $api =~ "{\"code\"" ]]; then
-    echo -e "=====> Faker提醒您：后台服务启动正常\n"
+    echo -e "=====> 后台服务启动正常\n"
   else
-    echo -e "=====> Faker提醒您：后台服务异常，重置基础环境并重启后台\n"
+    echo -e "=====> 后台服务异常，重置基础环境并重启后台\n"
     reset_env
   fi
 }
