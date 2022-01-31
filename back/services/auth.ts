@@ -178,7 +178,7 @@ export default class AuthService {
     );
     return {
       code: 100,
-      message: '已初始化密码，请前往SSH端口查看弹出的新密码重新登录',
+      message: '已初始化密码，请前往auth.json查看并重新登录',
     };
   }
 
@@ -290,7 +290,7 @@ export default class AuthService {
     const isSuccess = await this.notificationService.testNotify(
       notificationInfo,
       '青龙',
-      `【青龙一键版本】测试通知 https://t.me/pandaqx`,
+      `【蛟龙】测试通知 https://t.me/jiao_long`,
     );
     if (isSuccess) {
       const result = await this.updateNotificationDb({
