@@ -114,7 +114,7 @@ def telegram_bot(title, content):
     payload = {'chat_id': str(TG_USER_ID), 'text': f'{title}\n\n{content}', 'disable_web_page_preview': 'true'}
     proxies = None
     if TG_PROXY_IP and TG_PROXY_PORT:
-        proxyStr = "http://{}:{}".format(TG_PROXY_IP, TG_PROXY_PORT)
+        proxyStr = f"http://{TG_PROXY_IP}:{TG_PROXY_PORT}"
         proxies = {"http": proxyStr, "https": proxyStr}
     response = requests.post(url=url, headers=headers, params=payload, proxies=proxies).json()
     if response['ok']:
@@ -125,7 +125,7 @@ def telegram_bot(title, content):
 def dingding_bot(title, content):
     timestamp = str(round(time.time() * 1000))  # 时间戳
     secret_enc = DD_BOT_SECRET.encode('utf-8')
-    string_to_sign = '{}\n{}'.format(timestamp, DD_BOT_SECRET)
+    string_to_sign = f'{timestamp}\n{DD_BOT_SECRET}'
     string_to_sign_enc = string_to_sign.encode('utf-8')
     hmac_code = hmac.new(secret_enc, string_to_sign_enc, digestmod=hashlib.sha256).digest()
     sign = urllib.parse.quote_plus(base64.b64encode(hmac_code))  # 签名
@@ -162,7 +162,11 @@ def qywxapp_bot(title, content):
     html = content.replace("\n", "<br/>")
 
     options = None
-    if not qywx_app_params[4]:
+    if (
+        not qywx_app_params[4]
+        or qywx_app_params[4] != '0'
+        and qywx_app_params[4] == '1'
+    ):
         options = {
             'msgtype': 'text',
             'text': {
@@ -176,13 +180,6 @@ def qywxapp_bot(title, content):
                 title: f'{title}',
                 description: f'{content}',
                 btntxt: '更多'
-            }
-        }
-    elif qywx_app_params[4] == '1':
-        options = {
-            'msgtype': 'text',
-            'text': {
-                content: f'{title}\n\n${content}'
             }
         }
     else:
@@ -208,7 +205,7 @@ def qywxapp_bot(title, content):
         'agentid': f'{qywx_app_params[3]}',
         'safe': '0'
     }
-    data.update(options)
+    data |= options
     headers = {
         'Content-Type': 'application/json',
     }
@@ -237,19 +234,18 @@ def qyw_bot(title, content):
 
 def change_user_id(desp):
     qywx_app_params = QYWX_AM.split(',')
-    if qywx_app_params[2]:
-        userIdTmp = qywx_app_params[2].split("|")
-        userId = ""
-        for i in range(len(userIdTmp)):
-            count1 = f"账号{i + 1}"
-            count2 = f"签到号{i + 1}"
-            if re.search(count1, desp) or re.search(count2, desp):
-                userId = userIdTmp[i]
-        if not userId:
-            userId = qywx_app_params[2]
-        return userId
-    else:
+    if not qywx_app_params[2]:
         return "@all"
+    userIdTmp = qywx_app_params[2].split("|")
+    userId = ""
+    for i in range(len(userIdTmp)):
+        count1 = f"账号{i + 1}"
+        count2 = f"签到号{i + 1}"
+        if re.search(count1, desp) or re.search(count2, desp):
+            userId = userIdTmp[i]
+    if not userId:
+        userId = qywx_app_params[2]
+    return userId
 
 def send(title, content):
     """
